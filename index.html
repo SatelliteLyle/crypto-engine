@@ -2,80 +2,143 @@
 <html lang="en" class="h-full bg-slate-950 text-slate-100">
 <head>
     <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Crypto Prediction Suite v3.8</title>
-                <script src="https://cdn.tailwindcss.com"></script>
-                </head>
-                <body class="h-full flex flex-col antialiased">
-                    <!-- Main Dashboard Content will render here -->
-                        <div id="app" class="p-4">
-                                <h1 class="text-xl font-bold">Crypto Prediction Suite Active</h1>
-                                        <p>Engine status: Nominal</p>
-                                            </div>
-                                                
-                                                    <script>
-                                                            // --- GLOBAL VARIABLES & STATE ---
-                                                                    let historicalResults = [1, 1, 0, 1, 0, 1];
-                                                                            let userStance = 'OVER';
-                                                                                    let confidenceThreshold = 0.55;
-                                                                                            let microMomentum = 0.20;
-                                                                                                    let elapsedSeconds = 0;
-                                                                                                            let isCoinbaseDown = false;
-                                                                                                                    let activeBidValue = 0.75;
-                                                                                                                            let dryRunMode = true; // KEEP TRUE UNTIL YOU ARE READY
-                                                                                                                                    let currentBalance = 1000.00;
-                                                                                                                                            const maxLossThreshold = 0.01;
-                                                                                                                                                    const maxDailyProfitTarget = 0.02;
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Prediction Suite v3.8</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-full flex flex-col antialiased">
+    <!-- Main Dashboard Content will render here -->
+    <div id="app" class="p-4">
+        <h1 class="text-xl font-bold">Crypto Prediction Suite Active</h1>
+        <p>Engine status: Nominal</p>
+    </div>
 
-                                                                                                                                                            // --- CORE FUNCTIONS ---
-                                                                                                                                                                    function addLogEntry(msg) {
-                                                                                                                                                                                    console.log(`[LOG] ${new Date().toLocaleTimeString()} : ${msg}`);
-                                                                                                                                                                    }
+    <script>
+        // --- GLOBAL VARIABLES & STATE ---
+        let historicalResults = [1, 1, 0, 1, 0, 1];
+        let userStance = 'OVER';
+        let confidenceThreshold = 0.55;
+        let microMomentum = 0.20;
+        let elapsedSeconds = 0;
+        let isCoinbaseDown = false;
+        let activeBidValue = 0.75;
+        let dryRunMode = true; // KEEP TRUE UNTIL YOU ARE READY
+        let currentBalance = 1000.00;
+        const maxLossThreshold = 0.01;
+        const maxDailyProfitTarget = 0.02;
+        let priceHistory = []; // Store price history for metrics calculation
 
-                                                                                                                                                                            // --- VIBRATION & PRICE FEED ---
-                                                                                                                                                                                    function initLivePriceFeed() {
-                                                                                                                                                                                                    const ws = new WebSocket("wss://advanced-trade-ws.coinbase.com");
-                                                                                                                                                                                                                ws.onopen = () => {
-                                                                                                                                                                                                                                    addLogEntry("[API] Live feed connected.");
-                                                                                                                                                                                                                                                    ws.send(JSON.stringify({"type": "subscribe", "product_ids": ["BTC-USD"], "channel": "ticker"}));
-                                                                                                                                                                                                                };
-                                                                                                                                                                                                                            ws.onclose = () => {
-                                                                                                                                                                                                                                                addLogEntry("[API] Disconnected. Retrying...");
-                                                                                                                                                                                                                                                                setTimeout(initLivePriceFeed, 5000);
-                                                                                                                                                                                                                            };
-                                                                                                                                                                                    }
+        // --- CORE FUNCTIONS ---
+        function addLogEntry(msg) {
+            console.log(`[LOG] ${new Date().toLocaleTimeString()} : ${msg}`);
+        }
 
-                                                                                                                                                                                            function calculateEdge(marketContractPrice) {
-                                                                                                                                                                                                            // Your edge logic with vibration
-                                                                                                                                                                                                                        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-                                                                                                                                                                                                                                    return 0; // Simplified return
-                                                                                                                                                                                            }
+        // --- CONTRACT METRICS CALCULATION ---
+        function calculateContractMetrics(prices, strikePrice = null, timeRemainingSeconds = null) {
+            if (!prices || prices.length < 2) return null;
 
-                                                                                                                                                                                                    // --- SAFETY CIRCUIT BREAKERS ---
-                                                                                                                                                                                                            function checkCircuitBreaker(tradeResultPnL) {
-                                                                                                                                                                                                                            currentBalance += tradeResultPnL;
-                                                                                                                                                                                                                                        if ((1000 - currentBalance) >= (1000 * maxLossThreshold)) {
-                                                                                                                                                                                                                                                            isCoinbaseDown = true;
-                                                                                                                                                                                                                                                                            addLogEntry("[!!!] EMERGENCY SHUTDOWN: 1% Loss Limit hit.");
-                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                            }
+            const activePrices = prices.slice(-20);
+            const currentPrice = activePrices[activePrices.length - 1];
+            const startPrice = activePrices[0];
+            const totalTicks = activePrices.length - 1;
 
-                                                                                                                                                                                                                    function ensurePositionCap() {
-                                                                                                                                                                                                                                    let maxAllowed = currentBalance * 0.05;
-                                                                                                                                                                                                                                                if (activeBidValue > maxAllowed) activeBidValue = maxAllowed;
-                                                                                                                                                                                                                    }
+            let upTicks = 0;
+            let nonUpTicks = 0;
 
-                                                                                                                                                                                                                            // --- DAILY RESET ---
-                                                                                                                                                                                                                                    function performDailyEngineReset() {
-                                                                                                                                                                                                                                                    isCoinbaseDown = false;
-                                                                                                                                                                                                                                                                addLogEntry("[SYS] Daily Reset: Engine Re-armed.");
-                                                                                                                                                                                                                                    }
+            for (let i = 1; i < activePrices.length; i++) {
+                if (activePrices[i] > activePrices[i - 1]) {
+                    upTicks++;
+                } else {
+                    nonUpTicks++;
+                }
+            }
 
-                                                                                                                                                                                                                                            // --- INITIALIZATION ---
-                                                                                                                                                                                                                                                    window.addEventListener('DOMContentLoaded', () => {
-                                                                                                                                                                                                                                                                    initLivePriceFeed();
-                                                                                                                                                                                                                                                                                addLogEntry("System initialized.");
-                                                                                                                                                                                                                                                    });
-                                                                                                                                                                                                                                                        </script>
-                                                                                                                                                                                                                                                        </body>
-                                                                                                                                                                                                                                                        </html>
+            const upTickPct = Math.round((upTicks / totalTicks) * 100);
+            const nonUpTickPct = 100 - upTickPct;
+            const priceChange = Number((currentPrice - startPrice).toFixed(2));
+
+            return {
+                currentPrice: currentPrice.toFixed(2),
+                upTickPct: `${upTickPct}%`,
+                nonUpTickPct: `${nonUpTickPct}%`,
+                labelUp: "BUYING MOMENTUM",
+                labelNonUp: "SELLING/FLAT MOMENTUM",
+                netDollarChange: priceChange
+            };
+        }
+
+        // --- VIBRATION & PRICE FEED ---
+        function initLivePriceFeed() {
+            const ws = new WebSocket("wss://advanced-trade-ws.coinbase.com");
+            
+            ws.onopen = () => {
+                addLogEntry("[API] Live feed connected.");
+                ws.send(JSON.stringify({"type": "subscribe", "product_ids": ["BTC-USD"], "channel": "ticker"}));
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === "ticker" && data.price) {
+                        const price = parseFloat(data.price);
+                        priceHistory.push(price);
+                        
+                        // Keep only last 100 prices for performance
+                        if (priceHistory.length > 100) {
+                            priceHistory.shift();
+                        }
+
+                        // Update metrics
+                        const metrics = calculateContractMetrics(priceHistory);
+                        if (metrics) {
+                            addLogEntry(`[METRICS] Current: $${metrics.currentPrice} | UP: ${metrics.upTickPct} | DOWN: ${metrics.nonUpTickPct} | Change: $${metrics.netDollarChange}`);
+                        }
+
+                        // Trigger vibration on price movement
+                        if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
+                    }
+                } catch (e) {
+                    console.error("WebSocket message error:", e);
+                }
+            };
+
+            ws.onclose = () => {
+                addLogEntry("[API] Disconnected. Retrying...");
+                setTimeout(initLivePriceFeed, 5000);
+            };
+        }
+
+        function calculateEdge(marketContractPrice) {
+            // Your edge logic with vibration
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+            return 0; // Simplified return
+        }
+
+        // --- SAFETY CIRCUIT BREAKERS ---
+        function checkCircuitBreaker(tradeResultPnL) {
+            currentBalance += tradeResultPnL;
+            if ((1000 - currentBalance) >= (1000 * maxLossThreshold)) {
+                isCoinbaseDown = true;
+                addLogEntry("[!!!] EMERGENCY SHUTDOWN: 1% Loss Limit hit.");
+            }
+        }
+
+        function ensurePositionCap() {
+            let maxAllowed = currentBalance * 0.05;
+            if (activeBidValue > maxAllowed) activeBidValue = maxAllowed;
+        }
+
+        // --- DAILY RESET ---
+        function performDailyEngineReset() {
+            isCoinbaseDown = false;
+            addLogEntry("[SYS] Daily Reset: Engine Re-armed.");
+        }
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initLivePriceFeed();
+            addLogEntry("System initialized.");
+        });
+    </script>
+</body>
+</html>
