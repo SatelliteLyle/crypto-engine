@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Prediction Suite</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --accent: #58a6ff;
+      --green: #238636;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 900px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .subtitle {
+      color: #8b949e;
+      font-size: 1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      border-color: var(--accent);
+    }
+    .card h2 {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+    .card p {
+      color: #8b949e;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 16px 0;
+      font-size: 0.85rem;
+      color: #8b949e;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(88, 166, 255, 0.1);
+      color: var(--accent);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      width: fit-content;
+    }
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #0d1117;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s;
+      margin-top: 12px;
+    }
+    .btn:hover {
+      background: #79c0ff;
+    }
+    .btn-secondary {
+      background: rgba(88, 166, 255, 0.2);
+      color: var(--accent);
+    }
+    .btn-secondary:hover {
+      background: rgba(88, 166, 255, 0.3);
+    }
+    .device-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .device-tag {
+      background: rgba(35, 134, 54, 0.15);
+      color: var(--green);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    footer {
+      text-align: center;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      color: #8b949e;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚀 Crypto Prediction Suite</h1>
+      <p class="subtitle">Real-time Bitcoin analysis & mobile alerts powered by Coinbase</p>
+    </header>
+
+    <div class="grid">
+      <!-- Crypto Engine Card -->
+      <div class="card">
+        <h2>⚙️ Crypto Engine</h2>
+        <p>Full-featured prediction dashboard with 15-minute analysis, strike price tracking, and micro-tick momentum calculations.</p>
+        
+        <div class="card-meta">
+          <strong>Features:</strong>
+          <span>✓ DraftKings strike price integration</span>
+          <span>✓ 20-tick momentum meter</span>
+          <span>✓ Real-time Coinbase WebSocket feed</span>
+          <span>✓ Delta & buffer calculations</span>
+        </div>
+
+        <div class="device-tags">
+          <span class="device-tag">📱 Mobile</span>
+          <span class="device-tag">💻 Laptop</span>
+          <span class="device-tag">🖥️ Desktop</span>
+        </div>
+
+        <a href="https://SatelliteLyle.github.io/crypto-engine/" class="btn">Open Dashboard</a>
+        <a href="https://github.com/SatelliteLyle/crypto-engine" class="btn btn-secondary">View Code</a>
+      </div>
+
+      <!-- Crypto Hub Card -->
+      <div class="card">
+        <h2>📊 Crypto Hub</h2>
+        <p>Lightweight mobile HUD for quick probability checks with haptic vibration alerts on bullish momentum.</p>
+        
+        <div class="card-meta">
+          <strong>Features:</strong>
+          <span>✓ Live BTC/USD price streaming</span>
+          <span>✓ Bullish/Bearish probability bar</span>
+          <span>✓ Mobile haptic alerts (75%+ bullish)</span>
+          <span>✓ Minimal, distraction-free UI</span>
+        </div>
+
+        <div class="device-tags">
+          <span class="device-tag">📱 Mobile (Primary)</span>
+          <span class="device-tag">💻 Laptop</span>
+          <span class="device-tag">🖥️ Desktop</span>
+        </div>
+
+        <a href="https://SatelliteLyle.github.io/crypto-hub/" class="btn">Open HUD</a>
+        <a href="https://github.com/SatelliteLyle/crypto-hub" class="btn btn-secondary">View Code</a>
+      </div>
+    </div>
+
+    <footer>
+      <p>Built with HTML5 & Coinbase WebSocket API. Data updates in real-time. Mobile-responsive design.</p>
+      <p style="margin-top: 12px;">Last updated: 2026-08-24</p>
+    </footer>
+  </div>
+</body>
+</html>
