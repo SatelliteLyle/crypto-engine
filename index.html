@@ -1,144 +1,301 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Prediction Suite v3.8</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Prediction Engine | Satellite Lyle LLC</title>
+  <style>
+    :root {
+      --bg-color: #0d1117;
+      --card-bg: #161b22;
+      --border-color: #30363d;
+      --text-main: #c9d1d9;
+      --text-muted: #8b949e;
+      --green: #238636;
+      --red: #da3633;
+      --accent: #58a6ff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      margin-top: 0;
+      color: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    .meter-container {
+      margin-top: 20px;
+    }
+
+    .meter-bar {
+      height: 24px;
+      background: var(--red);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      margin-top: 8px;
+    }
+
+    .meter-fill-up {
+      height: 100%;
+      background: var(--green);
+      transition: width 0.3s ease;
+    }
+
+    .meter-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    .text-green { color: #3fb950; }
+    .text-red { color: #f85149; }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    .badge-above { background: rgba(63, 185, 80, 0.2); color: #3fb950; }
+    .badge-below { background: rgba(248, 81, 73, 0.2); color: #f85149; }
+  </style>
 </head>
-<body class="h-full flex flex-col antialiased">
-    <!-- Main Dashboard Content will render here -->
-    <div id="app" class="p-4">
-        <h1 class="text-xl font-bold">Crypto Prediction Suite Active</h1>
-        <p>Engine status: Nominal</p>
+<body>
+
+<div class="container">
+  <h1>Crypto Prediction Engine</h1>
+
+  <div class="input-group">
+    <label for="strikeInput">DraftKings Target Strike Price ($)</label>
+    <input type="number" id="strikeInput" placeholder="e.g. 76949.00" step="0.01" oninput="updateDashboard()">
+  </div>
+
+  <div class="grid">
+    <div class="stat-card">
+      <div class="stat-label">Coinbase BTC Price</div>
+      <div class="stat-value" id="btcPrice">Waiting...</div>
     </div>
+    <div class="stat-card">
+      <div class="stat-label">Strike Distance Buffer</div>
+      <div class="stat-value" id="strikeBuffer">--</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">20-Tick Net Delta</div>
+      <div class="stat-value" id="windowDelta">--</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Target Position</div>
+      <div class="stat-value" id="strikeStatus">--</div>
+    </div>
+  </div>
 
-    <script>
-        // --- GLOBAL VARIABLES & STATE ---
-        let historicalResults = [1, 1, 0, 1, 0, 1];
-        let userStance = 'OVER';
-        let confidenceThreshold = 0.55;
-        let microMomentum = 0.20;
-        let elapsedSeconds = 0;
-        let isCoinbaseDown = false;
-        let activeBidValue = 0.75;
-        let dryRunMode = true; // KEEP TRUE UNTIL YOU ARE READY
-        let currentBalance = 1000.00;
-        const maxLossThreshold = 0.01;
-        const maxDailyProfitTarget = 0.02;
-        let priceHistory = []; // Store price history for metrics calculation
+  <div class="meter-container">
+    <div class="stat-label">Micro-Tick Momentum Meter (20-Tick Window)</div>
+    <div class="meter-bar">
+      <div id="meterFill" class="meter-fill-up" style="width: 50%;"></div>
+    </div>
+    <div class="meter-labels">
+      <span class="text-green" id="upTickLabel">BUYING MOMENTUM: 50%</span>
+      <span class="text-red" id="nonUpTickLabel">SELLING/FLAT: 50%</span>
+    </div>
+  </div>
+</div>
 
-        // --- CORE FUNCTIONS ---
-        function addLogEntry(msg) {
-            console.log(`[LOG] ${new Date().toLocaleTimeString()} : ${msg}`);
+<script>
+  // Global price tick state array
+  const priceHistory = [];
+
+  /**
+   * Micro-Tick Momentum & Strike Buffer Calculator Engine
+   * Calculates tick velocity and dollar distance relative to strike.
+   */
+  function calculateContractMetrics(prices, strikePrice = null) {
+    if (!Array.isArray(prices) || prices.length < 2) {
+      return null;
+    }
+
+    // Keep active window constrained to last 20 ticks
+    const activePrices = prices.slice(-20);
+    const currentPrice = activePrices[activePrices.length - 1];
+    const startPrice = activePrices[0];
+    const totalTransitions = activePrices.length - 1;
+
+    let upTicks = 0;
+    let nonUpTicks = 0;
+
+    for (let i = 1; i < activePrices.length; i++) {
+      if (activePrices[i] > activePrices[i - 1]) {
+        upTicks++;
+      } else {
+        nonUpTicks++;
+      }
+    }
+
+    const upTickPct = Math.round((upTicks / totalTransitions) * 100);
+    const nonUpTickPct = 100 - upTickPct;
+    const windowPriceChange = Number((currentPrice - startPrice).toFixed(2));
+
+    let strikeAnalysis = null;
+    if (strikePrice !== null && !isNaN(strikePrice) && strikePrice > 0) {
+      const distance = Number((currentPrice - strikePrice).toFixed(2));
+      strikeAnalysis = {
+        distance: Math.abs(distance).toFixed(2),
+        rawDistance: distance,
+        isAbove: distance >= 0
+      };
+    }
+
+    return {
+      currentPrice: currentPrice.toFixed(2),
+      upTickPct,
+      nonUpTickPct,
+      windowDelta: windowPriceChange,
+      strikeAnalysis
+    };
+  }
+
+  // UI Controller Update
+  function updateDashboard() {
+    if (priceHistory.length < 2) return;
+
+    const strikeVal = parseFloat(document.getElementById('strikeInput').value);
+    const metrics = calculateContractMetrics(priceHistory, strikeVal);
+
+    if (!metrics) return;
+
+    // 1. Update Price Displays
+    document.getElementById('btcPrice').innerText = `$${Number(metrics.currentPrice).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    
+    const deltaEl = document.getElementById('windowDelta');
+    const deltaPrefix = metrics.windowDelta > 0 ? '+$' : '-$';
+    deltaEl.innerText = `${deltaPrefix}${Math.abs(metrics.windowDelta).toFixed(2)}`;
+    deltaEl.className = `stat-value ${metrics.windowDelta >= 0 ? 'text-green' : 'text-red'}`;
+
+    // 2. Update Meter Controls
+    document.getElementById('meterFill').style.width = `${metrics.upTickPct}%`;
+    document.getElementById('upTickLabel').innerText = `BUYING MOMENTUM: ${metrics.upTickPct}%`;
+    document.getElementById('nonUpTickLabel').innerText = `SELLING/FLAT: ${metrics.nonUpTickPct}%`;
+
+    // 3. Update Strike Distance Analysis
+    if (metrics.strikeAnalysis) {
+      document.getElementById('strikeBuffer').innerText = `$${metrics.strikeAnalysis.distance}`;
+      const statusEl = document.getElementById('strikeStatus');
+      if (metrics.strikeAnalysis.isAbove) {
+        statusEl.innerHTML = `<span class="status-badge badge-above">ABOVE STRIKE</span>`;
+      } else {
+        statusEl.innerHTML = `<span class="status-badge badge-below">BELOW STRIKE</span>`;
+      }
+    } else {
+      document.getElementById('strikeBuffer').innerText = '--';
+      document.getElementById('strikeStatus').innerText = '--';
+    }
+  }
+
+  // Live WebSocket Connection to Coinbase Ticker Stream
+  function initCoinbaseStream() {
+    const ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
+
+    ws.onopen = () => {
+      const subscribeMsg = {
+        type: 'subscribe',
+        product_ids: ['BTC-USD'],
+        channels: ['ticker']
+      };
+      ws.send(JSON.stringify(subscribeMsg));
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'ticker' && data.price) {
+        const price = parseFloat(data.price);
+        priceHistory.push(price);
+        if (priceHistory.length > 20) {
+          priceHistory.shift();
         }
+        updateDashboard();
+      }
+    };
 
-        // --- CONTRACT METRICS CALCULATION ---
-        function calculateContractMetrics(prices, strikePrice = null, timeRemainingSeconds = null) {
-            if (!prices || prices.length < 2) return null;
+    ws.onerror = (err) => console.error('WebSocket Error:', err);
+    ws.onclose = () => setTimeout(initCoinbaseStream, 5000); // Auto-reconnect
+  }
 
-            const activePrices = prices.slice(-20);
-            const currentPrice = activePrices[activePrices.length - 1];
-            const startPrice = activePrices[0];
-            const totalTicks = activePrices.length - 1;
+  // Initialize stream on load
+  window.onload = initCoinbaseStream;
+</script>
 
-            let upTicks = 0;
-            let nonUpTicks = 0;
-
-            for (let i = 1; i < activePrices.length; i++) {
-                if (activePrices[i] > activePrices[i - 1]) {
-                    upTicks++;
-                } else {
-                    nonUpTicks++;
-                }
-            }
-
-            const upTickPct = Math.round((upTicks / totalTicks) * 100);
-            const nonUpTickPct = 100 - upTickPct;
-            const priceChange = Number((currentPrice - startPrice).toFixed(2));
-
-            return {
-                currentPrice: currentPrice.toFixed(2),
-                upTickPct: `${upTickPct}%`,
-                nonUpTickPct: `${nonUpTickPct}%`,
-                labelUp: "BUYING MOMENTUM",
-                labelNonUp: "SELLING/FLAT MOMENTUM",
-                netDollarChange: priceChange
-            };
-        }
-
-        // --- VIBRATION & PRICE FEED ---
-        function initLivePriceFeed() {
-            const ws = new WebSocket("wss://advanced-trade-ws.coinbase.com");
-            
-            ws.onopen = () => {
-                addLogEntry("[API] Live feed connected.");
-                ws.send(JSON.stringify({"type": "subscribe", "product_ids": ["BTC-USD"], "channel": "ticker"}));
-            };
-
-            ws.onmessage = (event) => {
-                try {
-                    const data = JSON.parse(event.data);
-                    if (data.type === "ticker" && data.price) {
-                        const price = parseFloat(data.price);
-                        priceHistory.push(price);
-                        
-                        // Keep only last 100 prices for performance
-                        if (priceHistory.length > 100) {
-                            priceHistory.shift();
-                        }
-
-                        // Update metrics
-                        const metrics = calculateContractMetrics(priceHistory);
-                        if (metrics) {
-                            addLogEntry(`[METRICS] Current: $${metrics.currentPrice} | UP: ${metrics.upTickPct} | DOWN: ${metrics.nonUpTickPct} | Change: $${metrics.netDollarChange}`);
-                        }
-
-                        // Trigger vibration on price movement
-                        if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
-                    }
-                } catch (e) {
-                    console.error("WebSocket message error:", e);
-                }
-            };
-
-            ws.onclose = () => {
-                addLogEntry("[API] Disconnected. Retrying...");
-                setTimeout(initLivePriceFeed, 5000);
-            };
-        }
-
-        function calculateEdge(marketContractPrice) {
-            // Your edge logic with vibration
-            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-            return 0; // Simplified return
-        }
-
-        // --- SAFETY CIRCUIT BREAKERS ---
-        function checkCircuitBreaker(tradeResultPnL) {
-            currentBalance += tradeResultPnL;
-            if ((1000 - currentBalance) >= (1000 * maxLossThreshold)) {
-                isCoinbaseDown = true;
-                addLogEntry("[!!!] EMERGENCY SHUTDOWN: 1% Loss Limit hit.");
-            }
-        }
-
-        function ensurePositionCap() {
-            let maxAllowed = currentBalance * 0.05;
-            if (activeBidValue > maxAllowed) activeBidValue = maxAllowed;
-        }
-
-        // --- DAILY RESET ---
-        function performDailyEngineReset() {
-            isCoinbaseDown = false;
-            addLogEntry("[SYS] Daily Reset: Engine Re-armed.");
-        }
-
-        // --- INITIALIZATION ---
-        window.addEventListener('DOMContentLoaded', () => {
-            initLivePriceFeed();
-            addLogEntry("System initialized.");
-        });
-    </script>
 </body>
 </html>
