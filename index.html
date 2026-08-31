@@ -90,12 +90,11 @@
 
     .meter-bar {
       height: 22px;
-      background: var(--red);
       border-radius: 11px;
       overflow: hidden;
       margin: 8px 0;
     }
-    .meter-fill { height: 100%; background: var(--green); transition: width 0.25s ease; }
+    .meter-fill { height: 100%; transition: width 0.25s ease; }
     .meter-labels { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; }
     .text-green { color: var(--green); }
     .text-red { color: var(--red); }
@@ -151,12 +150,15 @@
       </div>
     </div>
 
+    <!-- 20-TICK METER WITH COLOR SWAP ONLY -->
     <div class="stat-card" style="margin-bottom:16px;">
       <div class="stat-label">Micro-Tick Momentum (20 ticks)</div>
-      <div class="meter-bar"><div id="meterFill" class="meter-fill" style="width:50%"></div></div>
+      <div class="meter-bar" style="background: var(--green);">
+        <div id="meterFill" class="meter-fill" style="width:50%; background: var(--red);"></div>
+      </div>
       <div class="meter-labels">
-        <span class="text-green" id="buyLabel">BUY 50%</span>
-        <span class="text-red" id="sellLabel">SELL/FLAT 50%</span>
+        <span class="text-red" id="buyLabel">BUY 50%</span>
+        <span class="text-green" id="sellLabel">SELL/FLAT 50%</span>
       </div>
     </div>
 
@@ -195,8 +197,8 @@
     document.getElementById('education').textContent = educationMessages[eduIndex];
     eduIndex = (eduIndex + 1) % educationMessages.length;
   }
-  setInterval(rotateEducation, 45000); // every 45 seconds
-  rotateEducation(); // start immediately
+  setInterval(rotateEducation, 45000);
+  rotateEducation();
 
   function updateAll() {
     if (priceHistory.length < 5) return;
@@ -311,7 +313,6 @@
       const d = JSON.parse(e.data);
       if (d.type === 'ticker' && d.price) {
         priceHistory.push({ price: parseFloat(d.price), t: Date.now() });
-        // Keep roughly last 90 minutes
         const cutoff = Date.now() - 90 * 60 * 1000;
         while (priceHistory.length && priceHistory[0].t < cutoff) priceHistory.shift();
         updateAll();
