@@ -6,296 +6,323 @@
   <title>Crypto Prediction Engine | Satellite Lyle LLC</title>
   <style>
     :root {
-      --bg-color: #0d1117;
-      --card-bg: #161b22;
-      --border-color: #30363d;
-      --text-main: #c9d1d9;
-      --text-muted: #8b949e;
-      --green: #238636;
-      --red: #da3633;
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --green: #3fb950;
+      --red: #f85149;
+      --yellow: #d29922;
       --accent: #58a6ff;
     }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      margin: 0;
-      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
       display: flex;
       justify-content: center;
     }
-
     .container {
       width: 100%;
-      max-width: 600px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      max-width: 640px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
     }
-
     h1 {
-      font-size: 1.4rem;
-      margin-top: 0;
-      color: #ffffff;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 12px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .stat-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 12px;
-    }
-
-    .stat-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .stat-value {
       font-size: 1.25rem;
-      font-weight: 600;
-      margin-top: 4px;
+      color: #fff;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
     }
-
-    .input-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-
+    .input-group { margin-bottom: 16px; }
+    label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
     input[type="number"] {
       width: 100%;
-      padding: 10px;
-      background: var(--bg-color);
-      border: 1px solid var(--border-color);
+      padding: 11px;
+      background: var(--bg);
+      border: 1px solid var(--border);
       border-radius: 6px;
       color: #fff;
       font-size: 1rem;
-      box-sizing: border-box;
     }
-
-    .meter-container {
-      margin-top: 20px;
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
     }
+    .stat-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .stat-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+    .stat-value { font-size: 1.2rem; font-weight: 600; font-family: monospace; margin-top: 3px; }
+    
+    .section-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .suggestion {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      min-height: 52px;
+    }
+    .suggestion.bull { border-left: 4px solid var(--green); }
+    .suggestion.bear { border-left: 4px solid var(--red); }
+    .suggestion.neutral { border-left: 4px solid var(--yellow); }
+    .suggestion.edu { border-left: 4px solid var(--accent); font-size: 0.88rem; }
 
     .meter-bar {
-      height: 24px;
+      height: 22px;
       background: var(--red);
-      border-radius: 12px;
+      border-radius: 11px;
       overflow: hidden;
-      display: flex;
-      margin-top: 8px;
+      margin: 8px 0;
     }
-
-    .meter-fill-up {
-      height: 100%;
-      background: var(--green);
-      transition: width 0.3s ease;
-    }
-
-    .meter-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.85rem;
-      margin-top: 6px;
-      font-weight: 600;
-    }
-
-    .text-green { color: #3fb950; }
-    .text-red { color: #f85149; }
-    .status-badge {
+    .meter-fill { height: 100%; background: var(--green); transition: width 0.25s ease; }
+    .meter-labels { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; }
+    .text-green { color: var(--green); }
+    .text-red { color: var(--red); }
+    .badge {
       display: inline-block;
       padding: 2px 8px;
       border-radius: 4px;
       font-size: 0.75rem;
-      font-weight: bold;
+      font-weight: 700;
     }
-    .badge-above { background: rgba(63, 185, 80, 0.2); color: #3fb950; }
-    .badge-below { background: rgba(248, 81, 73, 0.2); color: #f85149; }
+    .badge-above { background: rgba(63,185,80,0.2); color: var(--green); }
+    .badge-below { background: rgba(248,81,73,0.2); color: var(--red); }
+    .range-row { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Crypto Prediction Engine</h1>
 
-<div class="container">
-  <h1>Crypto Prediction Engine</h1>
+    <div class="input-group">
+      <label>Target / Strike Price (optional – for over/under or mental target)</label>
+      <input type="number" id="strikeInput" placeholder="e.g. 78100" step="0.01" oninput="updateAll()">
+    </div>
 
-  <div class="input-group">
-    <label for="strikeInput">DraftKings Target Strike Price ($)</label>
-    <input type="number" id="strikeInput" placeholder="e.g. 76949.00" step="0.01" oninput="updateDashboard()">
+    <!-- LIVE TRADE ADVICE -->
+    <div class="section-label">Trade Advice & Insights</div>
+    <div id="suggestion" class="suggestion neutral">
+      Connecting to live data...
+    </div>
+
+    <!-- EDUCATIONAL BOX -->
+    <div class="section-label">How to Trade Successfully</div>
+    <div id="education" class="suggestion edu">
+      Risk only a small % of your account per trade. Always decide your invalidation level before entering. Wait for clearer momentum + range conditions. Patience and process beat prediction.
+    </div>
+
+    <div class="grid">
+      <div class="stat-card">
+        <div class="stat-label">Coinbase BTC Price</div>
+        <div class="stat-value" id="btcPrice">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Target Position</div>
+        <div class="stat-value" id="strikeStatus">No target</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">20-Tick Momentum</div>
+        <div class="stat-value" id="momentum">50%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Distance to Target</div>
+        <div class="stat-value" id="distance">--</div>
+      </div>
+    </div>
+
+    <div class="stat-card" style="margin-bottom:16px;">
+      <div class="stat-label">Micro-Tick Momentum (20 ticks)</div>
+      <div class="meter-bar"><div id="meterFill" class="meter-fill" style="width:50%"></div></div>
+      <div class="meter-labels">
+        <span class="text-green" id="buyLabel">BUY 50%</span>
+        <span class="text-red" id="sellLabel">SELL/FLAT 50%</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="stat-card">
+        <div class="stat-label">15-Min Range</div>
+        <div class="stat-value" id="range15">--</div>
+        <div class="range-row" id="range15pct">--% of range used</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">1-Hour Range</div>
+        <div class="stat-value" id="range60">--</div>
+        <div class="range-row" id="range60pct">--% of range used</div>
+      </div>
+    </div>
   </div>
-
-  <div class="grid">
-    <div class="stat-card">
-      <div class="stat-label">Coinbase BTC Price</div>
-      <div class="stat-value" id="btcPrice">Waiting...</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Strike Distance Buffer</div>
-      <div class="stat-value" id="strikeBuffer">--</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">20-Tick Net Delta</div>
-      <div class="stat-value" id="windowDelta">--</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Target Position</div>
-      <div class="stat-value" id="strikeStatus">--</div>
-    </div>
-  </div>
-
-  <div class="meter-container">
-    <div class="stat-label">Micro-Tick Momentum Meter (20-Tick Window)</div>
-    <div class="meter-bar">
-      <div id="meterFill" class="meter-fill-up" style="width: 50%;"></div>
-    </div>
-    <div class="meter-labels">
-      <span class="text-green" id="upTickLabel">BUYING MOMENTUM: 50%</span>
-      <span class="text-red" id="nonUpTickLabel">SELLING/FLAT: 50%</span>
-    </div>
-  </div>
-</div>
 
 <script>
-  // Global price tick state array
   const priceHistory = [];
+  let lastPrice = null;
 
-  /**
-   * Micro-Tick Momentum & Strike Buffer Calculator Engine
-   * Calculates tick velocity and dollar distance relative to strike.
-   */
-  function calculateContractMetrics(prices, strikePrice = null) {
-    if (!Array.isArray(prices) || prices.length < 2) {
-      return null;
-    }
+  // Educational rotating messages
+  const educationMessages = [
+    "Risk only a small % of your account per trade. Always decide your invalidation level before entering. Wait for clearer momentum + range conditions. Patience and process beat prediction.",
+    "The best trade is often no trade. If momentum is mixed and price is mid-range, standing aside protects your capital.",
+    "Use the 15-minute range to judge timing and the 1-hour range for context. Entering near the extreme of a range usually offers worse risk/reward.",
+    "On Coinbase perpetuals, funding rates matter on longer holds. Spot has no funding and no liquidation risk — simpler for learning.",
+    "Strong momentum is useful only when price still has room inside the recent range. Chasing the end of a move is a common way to lose.",
+    "Write down why you entered. Review later. The tool shows conditions — your discipline determines results.",
+    "Long bias works best with strong buying momentum and room left in the 15-min range. Short bias is the opposite.",
+    "Never increase size after a loss to 'get even'. That is the fastest way to damage an account."
+  ];
+  let eduIndex = 0;
 
-    // Keep active window constrained to last 20 ticks
-    const activePrices = prices.slice(-20);
-    const currentPrice = activePrices[activePrices.length - 1];
-    const startPrice = activePrices[0];
-    const totalTransitions = activePrices.length - 1;
-
-    let upTicks = 0;
-    let nonUpTicks = 0;
-
-    for (let i = 1; i < activePrices.length; i++) {
-      if (activePrices[i] > activePrices[i - 1]) {
-        upTicks++;
-      } else {
-        nonUpTicks++;
-      }
-    }
-
-    const upTickPct = Math.round((upTicks / totalTransitions) * 100);
-    const nonUpTickPct = 100 - upTickPct;
-    const windowPriceChange = Number((currentPrice - startPrice).toFixed(2));
-
-    let strikeAnalysis = null;
-    if (strikePrice !== null && !isNaN(strikePrice) && strikePrice > 0) {
-      const distance = Number((currentPrice - strikePrice).toFixed(2));
-      strikeAnalysis = {
-        distance: Math.abs(distance).toFixed(2),
-        rawDistance: distance,
-        isAbove: distance >= 0
-      };
-    }
-
-    return {
-      currentPrice: currentPrice.toFixed(2),
-      upTickPct,
-      nonUpTickPct,
-      windowDelta: windowPriceChange,
-      strikeAnalysis
-    };
+  function rotateEducation() {
+    document.getElementById('education').textContent = educationMessages[eduIndex];
+    eduIndex = (eduIndex + 1) % educationMessages.length;
   }
+  setInterval(rotateEducation, 45000); // every 45 seconds
+  rotateEducation(); // start immediately
 
-  // UI Controller Update
-  function updateDashboard() {
-    if (priceHistory.length < 2) return;
+  function updateAll() {
+    if (priceHistory.length < 5) return;
 
-    const strikeVal = parseFloat(document.getElementById('strikeInput').value);
-    const metrics = calculateContractMetrics(priceHistory, strikeVal);
+    const now = Date.now();
+    const prices = priceHistory.map(p => p.price);
+    const current = prices[prices.length - 1];
 
-    if (!metrics) return;
+    // Momentum (last 20 ticks)
+    const window = prices.slice(-20);
+    let up = 0;
+    for (let i = 1; i < window.length; i++) {
+      if (window[i] > window[i-1]) up++;
+    }
+    const upPct = (up / (window.length - 1)) * 100;
+    const downPct = 100 - upPct;
 
-    // 1. Update Price Displays
-    document.getElementById('btcPrice').innerText = `$${Number(metrics.currentPrice).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-    
-    const deltaEl = document.getElementById('windowDelta');
-    const deltaPrefix = metrics.windowDelta > 0 ? '+$' : '-$';
-    deltaEl.innerText = `${deltaPrefix}${Math.abs(metrics.windowDelta).toFixed(2)}`;
-    deltaEl.className = `stat-value ${metrics.windowDelta >= 0 ? 'text-green' : 'text-red'}`;
+    // 15-min and 1-hour ranges
+    const min15 = now - 15 * 60 * 1000;
+    const min60 = now - 60 * 60 * 1000;
+    const p15 = priceHistory.filter(p => p.t >= min15).map(p => p.price);
+    const p60 = priceHistory.filter(p => p.t >= min60).map(p => p.price);
 
-    // 2. Update Meter Controls
-    document.getElementById('meterFill').style.width = `${metrics.upTickPct}%`;
-    document.getElementById('upTickLabel').innerText = `BUYING MOMENTUM: ${metrics.upTickPct}%`;
-    document.getElementById('nonUpTickLabel').innerText = `SELLING/FLAT: ${metrics.nonUpTickPct}%`;
+    const high15 = p15.length ? Math.max(...p15) : current;
+    const low15  = p15.length ? Math.min(...p15) : current;
+    const high60 = p60.length ? Math.max(...p60) : current;
+    const low60  = p60.length ? Math.min(...p60) : current;
 
-    // 3. Update Strike Distance Analysis
-    if (metrics.strikeAnalysis) {
-      document.getElementById('strikeBuffer').innerText = `$${metrics.strikeAnalysis.distance}`;
-      const statusEl = document.getElementById('strikeStatus');
-      if (metrics.strikeAnalysis.isAbove) {
-        statusEl.innerHTML = `<span class="status-badge badge-above">ABOVE STRIKE</span>`;
-      } else {
-        statusEl.innerHTML = `<span class="status-badge badge-below">BELOW STRIKE</span>`;
-      }
+    const range15 = high15 - low15;
+    const range60 = high60 - low60;
+    const used15 = range15 > 0 ? ((current - low15) / range15) * 100 : 50;
+    const used60 = range60 > 0 ? ((current - low60) / range60) * 100 : 50;
+
+    // Strike / Target
+    const strike = parseFloat(document.getElementById('strikeInput').value);
+    let distText = '--';
+    let posHTML = 'No target';
+    let dist = null;
+    if (!isNaN(strike) && strike > 0) {
+      dist = current - strike;
+      distText = (dist >= 0 ? '+\( ' : '- \)') + Math.abs(dist).toFixed(2);
+      posHTML = dist >= 0
+        ? '<span class="badge badge-above">ABOVE TARGET</span>'
+        : '<span class="badge badge-below">BELOW TARGET</span>';
+    }
+
+    // Update UI
+    const priceEl = document.getElementById('btcPrice');
+    priceEl.textContent = '$' + current.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    if (lastPrice !== null) {
+      priceEl.style.color = current > lastPrice ? 'var(--green)' : current < lastPrice ? 'var(--red)' : 'var(--text)';
+    }
+    lastPrice = current;
+
+    document.getElementById('momentum').textContent = upPct.toFixed(1) + '% Buy';
+    document.getElementById('meterFill').style.width = upPct + '%';
+    document.getElementById('buyLabel').textContent = `BUY ${upPct.toFixed(1)}%`;
+    document.getElementById('sellLabel').textContent = `SELL/FLAT ${downPct.toFixed(1)}%`;
+
+    document.getElementById('distance').textContent = distText;
+    document.getElementById('strikeStatus').innerHTML = posHTML;
+
+    document.getElementById('range15').textContent = `\[ {low15.toFixed(0)} – \]{high15.toFixed(0)}`;
+    document.getElementById('range15pct').textContent = used15.toFixed(0) + '% of range used';
+    document.getElementById('range60').textContent = `\[ {low60.toFixed(0)} – \]{high60.toFixed(0)}`;
+    document.getElementById('range60pct').textContent = used60.toFixed(0) + '% of range used';
+
+    // Live suggestion engine
+    let msg = '';
+    let cls = 'neutral';
+
+    if (upPct >= 70 && used15 < 80) {
+      msg = 'Strong buying momentum. Price still has room inside the 15-min range. Conditions currently favor LONG bias or holding longs.';
+      cls = 'bull';
+    } else if (upPct <= 30 && used15 > 20) {
+      msg = 'Strong selling momentum. Price still has room to the downside in the 15-min range. Conditions currently favor SHORT bias or reducing longs.';
+      cls = 'bear';
+    } else if (range15 < 80) {
+      msg = '15-minute range is tight (consolidation). Wait for expansion. No strong directional edge yet.';
+      cls = 'neutral';
+    } else if (dist !== null && Math.abs(dist) < 50 && upPct > 55) {
+      msg = 'Price is close to your target with mild buying pressure. Watch for acceptance above or rejection.';
+      cls = 'neutral';
+    } else if (dist !== null && dist > 100 && upPct > 60) {
+      msg = 'Price is meaningfully above target with buying momentum. Favorable for holding or managing open longs.';
+      cls = 'bull';
+    } else if (dist !== null && dist < -100 && upPct < 40) {
+      msg = 'Price is meaningfully below target with selling pressure. Favorable for holding or managing open shorts.';
+      cls = 'bear';
     } else {
-      document.getElementById('strikeBuffer').innerText = '--';
-      document.getElementById('strikeStatus').innerText = '--';
+      msg = 'Mixed signals. Momentum is balanced and price is mid-range. Best action is patience or very small size.';
+      cls = 'neutral';
     }
+
+    const sug = document.getElementById('suggestion');
+    sug.textContent = msg;
+    sug.className = 'suggestion ' + cls;
   }
 
-  // Live WebSocket Connection to Coinbase Ticker Stream
-  function initCoinbaseStream() {
+  // WebSocket connection
+  function connect() {
     const ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
-
     ws.onopen = () => {
-      const subscribeMsg = {
+      document.getElementById('suggestion').textContent = 'Live data connected. Waiting for ticks...';
+      ws.send(JSON.stringify({
         type: 'subscribe',
         product_ids: ['BTC-USD'],
         channels: ['ticker']
-      };
-      ws.send(JSON.stringify(subscribeMsg));
+      }));
     };
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'ticker' && data.price) {
-        const price = parseFloat(data.price);
-        priceHistory.push(price);
-        if (priceHistory.length > 20) {
-          priceHistory.shift();
-        }
-        updateDashboard();
+    ws.onmessage = (e) => {
+      const d = JSON.parse(e.data);
+      if (d.type === 'ticker' && d.price) {
+        priceHistory.push({ price: parseFloat(d.price), t: Date.now() });
+        // Keep roughly last 90 minutes
+        const cutoff = Date.now() - 90 * 60 * 1000;
+        while (priceHistory.length && priceHistory[0].t < cutoff) priceHistory.shift();
+        updateAll();
       }
     };
-
-    ws.onerror = (err) => console.error('WebSocket Error:', err);
-    ws.onclose = () => setTimeout(initCoinbaseStream, 5000); // Auto-reconnect
+    ws.onclose = () => {
+      document.getElementById('suggestion').textContent = 'Connection lost. Reconnecting...';
+      setTimeout(connect, 4000);
+    };
   }
-
-  // Initialize stream on load
-  window.onload = initCoinbaseStream;
+  connect();
 </script>
-
 </body>
 </html>
