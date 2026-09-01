@@ -3,327 +3,179 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crypto Prediction Engine | Satellite Lyle LLC</title>
+  <title>Predictions Predictor v4.6 – Chainlink Integrity</title>
   <style>
     :root {
-      --bg: #0d1117;
-      --card: #161b22;
-      --border: #30363d;
-      --text: #c9d1d9;
-      --muted: #8b949e;
-      --green: #3fb950;
-      --red: #f85149;
-      --yellow: #d29922;
-      --accent: #58a6ff;
+      --bg: #090a0f;
+      --card-bg: rgba(18, 22, 36, 0.75);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --green: #10b981;
+      --red: #ef4444;
+      --accent: #3b82f6;
+      --yellow: #eab308;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      padding: 16px;
-      display: flex;
-      justify-content: center;
-    }
-    .container {
-      width: 100%;
-      max-width: 640px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-    }
-    h1 {
-      font-size: 1.25rem;
-      color: #fff;
-      margin-bottom: 16px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
-    }
-    .input-group { margin-bottom: 16px; }
-    label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
-    input[type="number"] {
-      width: 100%;
-      padding: 11px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: #fff;
-      font-size: 1rem;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    .stat-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-    }
-    .stat-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
-    .stat-value { font-size: 1.2rem; font-weight: 600; font-family: monospace; margin-top: 3px; }
-    
-    .section-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
-    .suggestion {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px;
-      margin-bottom: 14px;
-      font-size: 0.95rem;
-      line-height: 1.45;
-      min-height: 52px;
-    }
-    .suggestion.bull { border-left: 4px solid var(--green); }
-    .suggestion.bear { border-left: 4px solid var(--red); }
-    .suggestion.neutral { border-left: 4px solid var(--yellow); }
-    .suggestion.edu { border-left: 4px solid var(--accent); font-size: 0.88rem; }
-
-    .meter-bar {
-      height: 22px;
-      border-radius: 11px;
-      overflow: hidden;
-      margin: 8px 0;
-    }
-    .meter-fill { height: 100%; transition: width 0.25s ease; }
-    .meter-labels { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; }
-    .text-green { color: var(--green); }
-    .text-red { color: var(--red); }
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-    .badge-above { background: rgba(63,185,80,0.2); color: var(--green); }
-    .badge-below { background: rgba(248,81,73,0.2); color: var(--red); }
-    .range-row { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 16px; display: flex; flex-direction: column; gap: 16px; min-height: 100vh; }
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+    h1 { font-size: 1.05rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); }
+    .status { font-size: 0.75rem; padding: 4px 8px; border-radius: 12px; background: rgba(255,255,255,0.05); }
+    .status.online { color: var(--green); border: 1px solid var(--green); }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; backdrop-filter: blur(10px); }
+    .price-display { font-size: 1.8rem; font-weight: bold; font-family: monospace; }
+    .label { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; }
+    .row { display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; }
+    .half { flex: 1; }
+    .prob-bar-container { background: rgba(255,255,255,0.05); height: 12px; border-radius: 6px; overflow: hidden; margin: 12px 0; display: flex; }
+    .prob-bar-up { background: var(--green); width: 50%; transition: width 0.3s; }
+    .prob-bar-down { background: var(--red); width: 50%; transition: width 0.3s; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem; color: var(--muted); }
+    .stat-val { color: var(--text); font-weight: 600; }
+    .divergence { font-size: 0.8rem; margin-top: 8px; color: var(--yellow); display: none; }
+    .small { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Crypto Prediction Engine</h1>
+  <header>
+    <h1>Predictions Predictor v4.6</h1>
+    <div id="status" class="status">Connecting...</div>
+  </header>
 
-    <div class="input-group">
-      <label>Target / Strike Price (optional – for over/under or mental target)</label>
-      <input type="number" id="strikeInput" placeholder="e.g. 78100" step="0.01" oninput="updateAll()">
-    </div>
-
-    <!-- LIVE TRADE ADVICE -->
-    <div class="section-label">Trade Advice & Insights</div>
-    <div id="suggestion" class="suggestion neutral">
-      Connecting to live data...
-    </div>
-
-    <!-- EDUCATIONAL BOX -->
-    <div class="section-label">How to Trade Successfully</div>
-    <div id="education" class="suggestion edu">
-      Risk only a small % of your account per trade. Always decide your invalidation level before entering. Wait for clearer momentum + range conditions. Patience and process beat prediction.
-    </div>
-
-    <div class="grid">
-      <div class="stat-card">
-        <div class="stat-label">Coinbase BTC Price</div>
-        <div class="stat-value" id="btcPrice">--</div>
+  <div class="card">
+    <div class="row">
+      <div class="half">
+        <div class="label">Coinbase (Live)</div>
+        <div id="price" class="price-display">$0.00</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Target Position</div>
-        <div class="stat-value" id="strikeStatus">No target</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">20-Tick Momentum</div>
-        <div class="stat-value" id="momentum">50%</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Distance to Target</div>
-        <div class="stat-value" id="distance">--</div>
+      <div class="half">
+        <div class="label">Chainlink (Reference)</div>
+        <div id="cl-price" class="price-display">—</div>
+        <div id="cl-updated" class="small"></div>
       </div>
     </div>
 
-    <!-- 20-TICK METER WITH COLOR SWAP ONLY -->
-    <div class="stat-card" style="margin-bottom:16px;">
-      <div class="stat-label">Micro-Tick Momentum (20 ticks)</div>
-      <div class="meter-bar" style="background: var(--green);">
-        <div id="meterFill" class="meter-fill" style="width:50%; background: var(--red);"></div>
-      </div>
-      <div class="meter-labels">
-        <span class="text-red" id="buyLabel">BUY 50%</span>
-        <span class="text-green" id="sellLabel">SELL/FLAT 50%</span>
-      </div>
-    </div>
+    <div id="divergence" class="divergence">⚠ Divergence detected – using Chainlink for integrity</div>
 
-    <div class="grid">
-      <div class="stat-card">
-        <div class="stat-label">15-Min Range</div>
-        <div class="stat-value" id="range15">--</div>
-        <div class="range-row" id="range15pct">--% of range used</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">1-Hour Range</div>
-        <div class="stat-value" id="range60">--</div>
-        <div class="range-row" id="range60pct">--% of range used</div>
-      </div>
+    <div class="prob-bar-container">
+      <div id="bar-up" class="prob-bar-up"></div>
+      <div id="bar-down" class="prob-bar-down"></div>
+    </div>
+    <div class="stats">
+      <div>Bullish Prob: <span id="prob-up" class="stat-val">50%</span></div>
+      <div>Bearish Prob: <span id="prob-down" class="stat-val">50%</span></div>
     </div>
   </div>
 
-<script>
-  const priceHistory = [];
-  let lastPrice = null;
+  <!-- Free ethers.js from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+  <script>
+    // ===== Chainlink BTC/USD (Ethereum mainnet) =====
+    const CHAINLINK_BTC_USD = "0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c";
+    const AGGREGATOR_ABI = [
+      "function latestRoundData() view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)"
+    ];
 
-  // Educational rotating messages
-  const educationMessages = [
-    "Risk only a small % of your account per trade. Always decide your invalidation level before entering. Wait for clearer momentum + range conditions. Patience and process beat prediction.",
-    "The best trade is often no trade. If momentum is mixed and price is mid-range, standing aside protects your capital.",
-    "Use the 15-minute range to judge timing and the 1-hour range for context. Entering near the extreme of a range usually offers worse risk/reward.",
-    "On Coinbase perpetuals, funding rates matter on longer holds. Spot has no funding and no liquidation risk — simpler for learning.",
-    "Strong momentum is useful only when price still has room inside the recent range. Chasing the end of a move is a common way to lose.",
-    "Write down why you entered. Review later. The tool shows conditions — your discipline determines results.",
-    "Long bias works best with strong buying momentum and room left in the 15-min range. Short bias is the opposite.",
-    "Never increase size after a loss to 'get even'. That is the fastest way to damage an account."
-  ];
-  let eduIndex = 0;
+    // Free public RPCs (try in order)
+    const RPCS = [
+      "https://ethereum-rpc.publicnode.com",
+      "https://rpc.ankr.com/eth",
+      "https://eth.llamarpc.com"
+    ];
 
-  function rotateEducation() {
-    document.getElementById('education').textContent = educationMessages[eduIndex];
-    eduIndex = (eduIndex + 1) % educationMessages.length;
-  }
-  setInterval(rotateEducation, 45000);
-  rotateEducation();
+    let coinbasePrice = 0;
+    let chainlinkPrice = 0;
+    let prices = [];
 
-  function updateAll() {
-    if (priceHistory.length < 5) return;
+    const priceEl = document.getElementById('price');
+    const clPriceEl = document.getElementById('cl-price');
+    const clUpdatedEl = document.getElementById('cl-updated');
+    const statusEl = document.getElementById('status');
+    const barUp = document.getElementById('bar-up');
+    const barDown = document.getElementById('bar-down');
+    const probUp = document.getElementById('prob-up');
+    const probDown = document.getElementById('prob-down');
+    const divergenceEl = document.getElementById('divergence');
 
-    const now = Date.now();
-    const prices = priceHistory.map(p => p.price);
-    const current = prices[prices.length - 1];
-
-    // Momentum (last 20 ticks)
-    const window = prices.slice(-20);
-    let up = 0;
-    for (let i = 1; i < window.length; i++) {
-      if (window[i] > window[i-1]) up++;
-    }
-    const upPct = (up / (window.length - 1)) * 100;
-    const downPct = 100 - upPct;
-
-    // 15-min and 1-hour ranges
-    const min15 = now - 15 * 60 * 1000;
-    const min60 = now - 60 * 60 * 1000;
-    const p15 = priceHistory.filter(p => p.t >= min15).map(p => p.price);
-    const p60 = priceHistory.filter(p => p.t >= min60).map(p => p.price);
-
-    const high15 = p15.length ? Math.max(...p15) : current;
-    const low15  = p15.length ? Math.min(...p15) : current;
-    const high60 = p60.length ? Math.max(...p60) : current;
-    const low60  = p60.length ? Math.min(...p60) : current;
-
-    const range15 = high15 - low15;
-    const range60 = high60 - low60;
-    const used15 = range15 > 0 ? ((current - low15) / range15) * 100 : 50;
-    const used60 = range60 > 0 ? ((current - low60) / range60) * 100 : 50;
-
-    // Strike / Target
-    const strike = parseFloat(document.getElementById('strikeInput').value);
-    let distText = '--';
-    let posHTML = 'No target';
-    let dist = null;
-    if (!isNaN(strike) && strike > 0) {
-      dist = current - strike;
-      distText = (dist >= 0 ? '+\( ' : '- \)') + Math.abs(dist).toFixed(2);
-      posHTML = dist >= 0
-        ? '<span class="badge badge-above">ABOVE TARGET</span>'
-        : '<span class="badge badge-below">BELOW TARGET</span>';
-    }
-
-    // Update UI
-    const priceEl = document.getElementById('btcPrice');
-    priceEl.textContent = '$' + current.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    if (lastPrice !== null) {
-      priceEl.style.color = current > lastPrice ? 'var(--green)' : current < lastPrice ? 'var(--red)' : 'var(--text)';
-    }
-    lastPrice = current;
-
-    document.getElementById('momentum').textContent = upPct.toFixed(1) + '% Buy';
-    document.getElementById('meterFill').style.width = upPct + '%';
-    document.getElementById('buyLabel').textContent = `BUY ${upPct.toFixed(1)}%`;
-    document.getElementById('sellLabel').textContent = `SELL/FLAT ${downPct.toFixed(1)}%`;
-
-    document.getElementById('distance').textContent = distText;
-    document.getElementById('strikeStatus').innerHTML = posHTML;
-
-    document.getElementById('range15').textContent = `\[ {low15.toFixed(0)} – \]{high15.toFixed(0)}`;
-    document.getElementById('range15pct').textContent = used15.toFixed(0) + '% of range used';
-    document.getElementById('range60').textContent = `\[ {low60.toFixed(0)} – \]{high60.toFixed(0)}`;
-    document.getElementById('range60pct').textContent = used60.toFixed(0) + '% of range used';
-
-    // Live suggestion engine
-    let msg = '';
-    let cls = 'neutral';
-
-    if (upPct >= 70 && used15 < 80) {
-      msg = 'Strong buying momentum. Price still has room inside the 15-min range. Conditions currently favor LONG bias or holding longs.';
-      cls = 'bull';
-    } else if (upPct <= 30 && used15 > 20) {
-      msg = 'Strong selling momentum. Price still has room to the downside in the 15-min range. Conditions currently favor SHORT bias or reducing longs.';
-      cls = 'bear';
-    } else if (range15 < 80) {
-      msg = '15-minute range is tight (consolidation). Wait for expansion. No strong directional edge yet.';
-      cls = 'neutral';
-    } else if (dist !== null && Math.abs(dist) < 50 && upPct > 55) {
-      msg = 'Price is close to your target with mild buying pressure. Watch for acceptance above or rejection.';
-      cls = 'neutral';
-    } else if (dist !== null && dist > 100 && upPct > 60) {
-      msg = 'Price is meaningfully above target with buying momentum. Favorable for holding or managing open longs.';
-      cls = 'bull';
-    } else if (dist !== null && dist < -100 && upPct < 40) {
-      msg = 'Price is meaningfully below target with selling pressure. Favorable for holding or managing open shorts.';
-      cls = 'bear';
-    } else {
-      msg = 'Mixed signals. Momentum is balanced and price is mid-range. Best action is patience or very small size.';
-      cls = 'neutral';
-    }
-
-    const sug = document.getElementById('suggestion');
-    sug.textContent = msg;
-    sug.className = 'suggestion ' + cls;
-  }
-
-  // WebSocket connection
-  function connect() {
+    // --- Coinbase WebSocket (your original) ---
     const ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
+
     ws.onopen = () => {
-      document.getElementById('suggestion').textContent = 'Live data connected. Waiting for ticks...';
+      statusEl.textContent = 'LIVE';
+      statusEl.classList.add('online');
       ws.send(JSON.stringify({
         type: 'subscribe',
         product_ids: ['BTC-USD'],
         channels: ['ticker']
       }));
     };
-    ws.onmessage = (e) => {
-      const d = JSON.parse(e.data);
-      if (d.type === 'ticker' && d.price) {
-        priceHistory.push({ price: parseFloat(d.price), t: Date.now() });
-        const cutoff = Date.now() - 90 * 60 * 1000;
-        while (priceHistory.length && priceHistory[0].t < cutoff) priceHistory.shift();
-        updateAll();
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'ticker' && data.price) {
+        coinbasePrice = parseFloat(data.price);
+        priceEl.textContent = `\[ {coinbasePrice.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        
+        prices.push(coinbasePrice);
+        if (prices.length > 20) prices.shift();
+        
+        if (prices.length > 5) {
+          let changes = 0;
+          for (let i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i-1]) changes++;
+          }
+          const upPct = Math.round((changes / (prices.length - 1)) * 100);
+          const downPct = 100 - upPct;
+          
+          barUp.style.width = `${upPct}%`;
+          barDown.style.width = `${downPct}%`;
+          probUp.textContent = `${upPct}%`;
+          probDown.textContent = `${downPct}%`;
+
+          if (upPct >= 75 && navigator.vibrate) navigator.vibrate(200);
+        }
+
+        checkDivergence();
       }
     };
-    ws.onclose = () => {
-      document.getElementById('suggestion').textContent = 'Connection lost. Reconnecting...';
-      setTimeout(connect, 4000);
-    };
-  }
-  connect();
-</script>
+
+    // --- Free Chainlink fetch ---
+    async function fetchChainlink() {
+      for (const rpc of RPCS) {
+        try {
+          const provider = new ethers.JsonRpcProvider(rpc);
+          const feed = new ethers.Contract(CHAINLINK_BTC_USD, AGGREGATOR_ABI, provider);
+          const roundData = await feed.latestRoundData();
+          const answer = Number(roundData.answer) / 1e8; // Chainlink uses 8 decimals for BTC/USD
+          const updatedAt = new Date(Number(roundData.updatedAt) * 1000);
+
+          chainlinkPrice = answer;
+          clPriceEl.textContent = ` \]{answer.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+          clUpdatedEl.textContent = `Updated: ${updatedAt.toLocaleTimeString()}`;
+          checkDivergence();
+          return;
+        } catch (e) {
+          console.warn("RPC failed, trying next:", rpc);
+        }
+      }
+      clPriceEl.textContent = "Unavailable";
+    }
+
+    function checkDivergence() {
+      if (coinbasePrice > 0 && chainlinkPrice > 0) {
+        const diffPct = Math.abs(coinbasePrice - chainlinkPrice) / chainlinkPrice * 100;
+        if (diffPct > 0.4) {
+          divergenceEl.style.display = "block";
+          divergenceEl.textContent = `⚠ Divergence ${diffPct.toFixed(2)}% – prefer Chainlink for integrity`;
+        } else {
+          divergenceEl.style.display = "none";
+        }
+      }
+    }
+
+    // Initial + every 60 seconds (free & respectful)
+    fetchChainlink();
+    setInterval(fetchChainlink, 60000);
+  </script>
 </body>
 </html>
