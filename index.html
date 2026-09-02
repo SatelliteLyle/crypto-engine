@@ -114,7 +114,7 @@
       const data = JSON.parse(event.data);
       if (data.type === 'ticker' && data.price) {
         coinbasePrice = parseFloat(data.price);
-        priceEl.textContent = `\[ {coinbasePrice.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        priceEl.textContent = `$${coinbasePrice.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
         
         prices.push(coinbasePrice);
         if (prices.length > 20) prices.shift();
@@ -132,11 +132,22 @@
           probUp.textContent = `${upPct}%`;
           probDown.textContent = `${downPct}%`;
 
-          if (upPct >= 75 && navigator.vibrate) navigator.vibrate(200);
+          if (upPct >= 75 && 'vibrate' in navigator) navigator.vibrate(200);
         }
 
         checkDivergence();
       }
+    };
+
+    ws.onerror = (err) => {
+      console.error('WebSocket error', err);
+      statusEl.textContent = 'ERROR';
+      statusEl.classList.remove('online');
+    };
+
+    ws.onclose = () => {
+      statusEl.textContent = 'DISCONNECTED';
+      statusEl.classList.remove('online');
     };
 
     // --- Free Chainlink fetch ---
@@ -150,7 +161,7 @@
           const updatedAt = new Date(Number(roundData.updatedAt) * 1000);
 
           chainlinkPrice = answer;
-          clPriceEl.textContent = ` \]{answer.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+          clPriceEl.textContent = `$${answer.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
           clUpdatedEl.textContent = `Updated: ${updatedAt.toLocaleTimeString()}`;
           checkDivergence();
           return;
