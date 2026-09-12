@@ -3,89 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Predictions Predictor v4.6 – Chainlink Integrity</title>
+  <title>🛸 GSAT Orbital Engine HUD v4.6</title>
   <style>
     :root {
-      --bg: #090a0f;
-      --card-bg: rgba(18, 22, 36, 0.75);
-      --border: rgba(255, 255, 255, 0.1);
+      --bg: #05060a;
+      --card-bg: rgba(10, 14, 26, 0.85);
+      --border: rgba(0, 255, 102, 0.2);
       --text: #e2e8f0;
       --muted: #64748b;
-      --green: #10b981;
-      --red: #ef4444;
+      --green: #00ff66;
+      --red: #ff3366;
       --accent: #3b82f6;
-      --yellow: #eab308;
+      --yellow: #00ffff;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding: 16px; display: flex; flex-direction: column; gap: 16px; min-height: 100vh; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: monospace; }
+    body { background: var(--bg); color: var(--text); padding: 16px; display: flex; flex-direction: column; gap: 16px; min-height: 100vh; justify-content: center; align-items: center; }
+    .container { max-width: 440px; width: 100%; display: flex; flex-direction: column; gap: 16px; }
     header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-    h1 { font-size: 1.05rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); }
-    .status { font-size: 0.75rem; padding: 4px 8px; border-radius: 12px; background: rgba(255,255,255,0.05); }
+    h1 { font-size: 1.1rem; letter-spacing: 1px; color: var(--green); }
+    .status { font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; background: rgba(255,255,255,0.05); }
     .status.online { color: var(--green); border: 1px solid var(--green); }
-    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; backdrop-filter: blur(10px); }
-    .price-display { font-size: 1.8rem; font-weight: bold; font-family: monospace; }
-    .label { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; }
-    .row { display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; }
-    .half { flex: 1; }
-    .prob-bar-container { background: rgba(255,255,255,0.05); height: 12px; border-radius: 6px; overflow: hidden; margin: 12px 0; display: flex; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; box-shadow: 0 0 15px rgba(0, 255, 102, 0.1); }
+    .price-display { font-size: 1.8rem; font-weight: bold; font-family: monospace; color: #fff; }
+    .label { font-size: 0.75rem; color: var(--green); margin-bottom: 4px; letter-spacing: 0.5px; }
+    .row { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .half { flex: 1; text-align: left; }
+    .prob-bar-container { background: rgba(255,255,255,0.05); height: 10px; border-radius: 3px; overflow: hidden; margin: 12px 0; display: flex; }
     .prob-bar-up { background: var(--green); width: 50%; transition: width 0.3s; }
     .prob-bar-down { background: var(--red); width: 50%; transition: width 0.3s; }
-    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem; color: var(--muted); }
-    .stat-val { color: var(--text); font-weight: 600; }
-    .divergence { font-size: 0.8rem; margin-top: 8px; color: var(--yellow); display: none; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8rem; text-align: left; }
+    .stat-val { color: var(--green); font-weight: 600; }
+    .divergence { font-size: 0.8rem; margin-top: 12px; color: var(--yellow); display: none; text-align: left; }
     .small { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+    .quote { font-style: italic; color: var(--yellow); margin-top: 20px; font-size: 0.85rem; text-align: center; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 12px; }
   </style>
 </head>
 <body>
+
+<div class="container">
   <header>
-    <h1>Predictions Predictor v4.6</h1>
+    <h1>🚀 $GSAT ORBITAL HUD</h1>
     <div id="status" class="status">Connecting...</div>
   </header>
 
   <div class="card">
+    <div style="font-size: 0.75rem; color: var(--muted); margin-bottom: 12px; letter-spacing: 1px;">DULLARD PREVENTION CORE LAYER</div>
+    
     <div class="row">
       <div class="half">
-        <div class="label">Coinbase (Live)</div>
+        <div class="label">COINBASE (LIVE)</div>
         <div id="price" class="price-display">$0.00</div>
       </div>
       <div class="half">
-        <div class="label">Chainlink (Reference)</div>
+        <div class="label">CHAINLINK (REF)</div>
         <div id="cl-price" class="price-display">—</div>
         <div id="cl-updated" class="small"></div>
       </div>
     </div>
 
-    <div id="divergence" class="divergence">⚠ Divergence detected – using Chainlink for integrity</div>
+    <div id="divergence" class="divergence">⚠ DIVERGENCE DETECTED — RE-ALIGNING PIPELINE</div>
 
     <div class="prob-bar-container">
       <div id="bar-up" class="prob-bar-up"></div>
       <div id="bar-down" class="prob-bar-down"></div>
     </div>
     <div class="stats">
-      <div>Bullish Prob: <span id="prob-up" class="stat-val">50%</span></div>
-      <div>Bearish Prob: <span id="prob-down" class="stat-val">50%</span></div>
+      <div>BULLISH PROB: <span id="prob-up" class="stat-val">50%</span></div>
+      <div>BEARISH PROB: <span id="prob-down" class="stat-val">50%</span></div>
     </div>
+
+    <div class="row" style="margin-top: 20px; margin-bottom: 0; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.05);">
+      <div class="half">
+        <div class="label" style="color: var(--muted);">DIVIDEND ENGINE</div>
+        <div style="font-size: 1.2rem; font-weight: bold; color: #fff;">$1.03 BASE</div>
+      </div>
+      <div class="half">
+        <div class="label" style="color: var(--muted);">MICRO-MARGIN</div>
+        <div style="font-size: 1.2rem; font-weight: bold; color: var(--green);">STEADY</div>
+      </div>
+    </div>
+
+    <div class="quote">“Respect, respect. Do not Disrespect, respect.”</div>
   </div>
+</div>
 
-  <!-- Free ethers.js from CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
-  <script>
-    // ===== Chainlink BTC/USD (Ethereum mainnet) =====
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+<script>
     const CHAINLINK_BTC_USD = "0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c";
-    const AGGREGATOR_ABI = [
-      "function latestRoundData() view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)"
-    ];
+    const AGGREGATOR_ABI = ["function latestRoundData() view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)"];
+    const RPCS = ["https://ethereum-rpc.publicnode.com", "https://rpc.ankr.com/eth"];
 
-    // Free public RPCs (try in order)
-    const RPCS = [
-      "https://ethereum-rpc.publicnode.com",
-      "https://rpc.ankr.com/eth",
-      "https://eth.llamarpc.com"
-    ];
-
-    let coinbasePrice = 0;
-    let chainlinkPrice = 0;
-    let prices = [];
+    let coinbasePrice = 0, chainlinkPrice = 0, prices = [];
 
     const priceEl = document.getElementById('price');
     const clPriceEl = document.getElementById('cl-price');
@@ -97,17 +105,12 @@
     const probDown = document.getElementById('prob-down');
     const divergenceEl = document.getElementById('divergence');
 
-    // --- Coinbase WebSocket (your original) ---
     const ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
 
     ws.onopen = () => {
-      statusEl.textContent = 'LIVE';
+      statusEl.textContent = 'DATA STREAM ACTIVE';
       statusEl.classList.add('online');
-      ws.send(JSON.stringify({
-        type: 'subscribe',
-        product_ids: ['BTC-USD'],
-        channels: ['ticker']
-      }));
+      ws.send(JSON.stringify({ type: 'subscribe', product_ids: ['BTC-USD'], channels: ['ticker'] }));
     };
 
     ws.onmessage = (event) => {
@@ -121,9 +124,7 @@
         
         if (prices.length > 5) {
           let changes = 0;
-          for (let i = 1; i < prices.length; i++) {
-            if (prices[i] > prices[i-1]) changes++;
-          }
+          for (let i = 1; i < prices.length; i++) { if (prices[i] > prices[i-1]) changes++; }
           const upPct = Math.round((changes / (prices.length - 1)) * 100);
           const downPct = 100 - upPct;
           
@@ -132,44 +133,30 @@
           probUp.textContent = `${upPct}%`;
           probDown.textContent = `${downPct}%`;
 
-          if (upPct >= 75 && 'vibrate' in navigator) navigator.vibrate(200);
+          if (upPct >= 75 && 'vibrate' in navigator) navigator.vibrate(15);
         }
-
         checkDivergence();
       }
     };
 
-    ws.onerror = (err) => {
-      console.error('WebSocket error', err);
-      statusEl.textContent = 'ERROR';
-      statusEl.classList.remove('online');
-    };
+    ws.onerror = () => { statusEl.textContent = 'STREAM DELAYED'; };
+    ws.onclose = () => { statusEl.textContent = 'STREAM OFFLINE'; };
 
-    ws.onclose = () => {
-      statusEl.textContent = 'DISCONNECTED';
-      statusEl.classList.remove('online');
-    };
-
-    // --- Free Chainlink fetch ---
     async function fetchChainlink() {
       for (const rpc of RPCS) {
         try {
           const provider = new ethers.JsonRpcProvider(rpc);
           const feed = new ethers.Contract(CHAINLINK_BTC_USD, AGGREGATOR_ABI, provider);
           const roundData = await feed.latestRoundData();
-          const answer = Number(roundData.answer) / 1e8; // Chainlink uses 8 decimals for BTC/USD
-          const updatedAt = new Date(Number(roundData.updatedAt) * 1000);
-
+          const answer = Number(roundData.answer) / 1e8;
           chainlinkPrice = answer;
           clPriceEl.textContent = `$${answer.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-          clUpdatedEl.textContent = `Updated: ${updatedAt.toLocaleTimeString()}`;
+          clUpdatedEl.textContent = `Sync: OK`;
           checkDivergence();
           return;
-        } catch (e) {
-          console.warn("RPC failed, trying next:", rpc);
-        }
+        } catch (e) { console.warn("Node skip"); }
       }
-      clPriceEl.textContent = "Unavailable";
+      clPriceEl.textContent = "TIMEOUT";
     }
 
     function checkDivergence() {
@@ -177,16 +164,14 @@
         const diffPct = Math.abs(coinbasePrice - chainlinkPrice) / chainlinkPrice * 100;
         if (diffPct > 0.4) {
           divergenceEl.style.display = "block";
-          divergenceEl.textContent = `⚠ Divergence ${diffPct.toFixed(2)}% – prefer Chainlink for integrity`;
         } else {
           divergenceEl.style.display = "none";
         }
       }
     }
 
-    // Initial + every 60 seconds (free & respectful)
     fetchChainlink();
     setInterval(fetchChainlink, 60000);
-  </script>
+</script>
 </body>
 </html>
